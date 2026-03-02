@@ -333,6 +333,10 @@ app.use(cors({
     origin: process.env.CLIENT_URL || 'http://localhost:7000',
     credentials: true
 }));
+app.use((req, res, next) => {
+    res.setHeader('ngrok-skip-browser-warning', 'true');
+    next();
+});
 app.use(express.json());
 app.use(express.static('public'));
 
