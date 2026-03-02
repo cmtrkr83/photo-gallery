@@ -272,6 +272,7 @@ function turkishToEnglish(text) {
 }
 
 const app = express();
+app.set('trust proxy', 1); 
 const PORT = process.env.PORT || 3000;
 
 // Session konfigürasyonu
@@ -282,6 +283,7 @@ app.use(session({
     cookie: {
         secure: process.env.NODE_ENV === 'production',
         maxAge: 24 * 60 * 60 * 1000 // 24 saat
+        sameSite: 'lax'  // ← BU SATIRI EKLE
     }
 }));
 

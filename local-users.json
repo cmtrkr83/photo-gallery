@@ -15,6 +15,14 @@
       "role": "admin",
       "passwordHash": "$2a$10$iMHj3B7j7S3TO/LAV7gtnOHe08AVFmHhkPh98La5dGwUbJyQJyTD.",
       "createdAt": "2026-03-02T07:50:59.695Z"
+    },
+    {
+      "id": "a1122a0b-4ebc-49c8-943b-3bc72b991d01",
+      "email": "caglarmebbis@gmail.com",
+      "name": "Çağlar Çankaya",
+      "role": "user",
+      "passwordHash": "$2a$10$UE8anuI//i1Af8REeQZvauCNI1brvr/2BuENbM3buI8j//IFvQVu.",
+      "createdAt": "2026-03-02T08:23:03.507Z"
     }
   ]
 }
