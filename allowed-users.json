@@ -1,0 +1,15 @@
+{
+  "admin": [
+    {
+      "email": "trkrcm@gmail.com",
+      "name": "Cem Türker"
+    }
+  ],
+  "users": [
+    {},
+    {
+      "email": "forumcemturker@gmail.com",
+      "name": "Cem2"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "users": [
+    {
+      "id": "5607b387-6bd7-4cab-8489-031d49c9120c",
+      "email": "forumcemturker@gmail.com",
+      "name": "Cem2",
+      "role": "user",
+      "passwordHash": "$2a$10$Lu4TVLxFnffsT.9dXWMN3OfbGm.kZ.nu9QRzcWRorAU5jleNZpZlO",
+      "createdAt": "2026-03-02T07:50:04.197Z"
+    },
+    {
+      "id": "387c03b0-c50b-4dec-8967-03e4a6e0080c",
+      "email": "trkrcm@gmail.com",
+      "name": "Cem Türker",
+      "role": "admin",
+      "passwordHash": "$2a$10$iMHj3B7j7S3TO/LAV7gtnOHe08AVFmHhkPh98La5dGwUbJyQJyTD.",
+      "createdAt": "2026-03-02T07:50:59.695Z"
+    }
+  ]
+}

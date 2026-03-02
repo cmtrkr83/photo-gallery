@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  photo-gallery:
+    build: .
+    container_name: photo-gallery
+    ports:
+      - "7000:7000"
+    volumes:
+      # Named Volume - Container silinse bile veriler kalır
+      - photo-gallery-uploads:/app/uploads
+    environment:
+      - NODE_ENV=production
+      - PORT=7000
+    restart: unless-stopped
+    networks:
+      - photo-network
+
+networks:
+  photo-network:
+    driver: bridge
+
+volumes:
+  photo-gallery-uploads:
+    driver: local

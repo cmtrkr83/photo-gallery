@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fotoğraf Galerisi Ana Sayfa</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Giriş ekranı -->
+    <div id="loginScreen" class="login-screen">
+        <div class="login-container">
+            <h1>📸 Fotoğraf Galerisi</h1>
+            <p>Google ile veya email/şifre ile giriş yapın</p>
+
+            <form id="localLoginForm" class="local-login-form">
+                <input type="email" id="loginEmail" placeholder="Email" required>
+                <input type="password" id="loginPassword" placeholder="Şifre" required>
+                <button type="submit" class="local-login-btn">Email ile Giriş Yap</button>
+            </form>
+
+            <div class="login-divider"><span>veya</span></div>
+
+            <a href="/auth/google" class="google-login-btn">
+                <svg width="18" height="18" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+                    <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+                    <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+                    <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+                    <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+                    <path fill="none" d="M0 0h48v48H0z"/>
+                </svg>
+                Google ile Giriş Yap
+            </a>
+        </div>
+    </div>
+
+    <!-- Ana Sayfa -->
+    <div id="mainApp" class="dashboard-container" style="display: none;">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <h2>📸 FotoGal</h2>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="#" id="navDashboard" class="nav-link active" onclick="showDashboard(event)"><span class="icon">📊</span> Ana Sayfa</a></li>
+                    <li><a href="#" id="navGallery" class="nav-link" onclick="showGallery(event)"><span class="icon">🖼️</span> Galeri</a></li>
+                    <li id="sidebarEducationsSettings" style="display: none;"><a href="#" id="navSettingsEducations" class="nav-link" onclick="showSettingsSection(event, 'educations')"><span class="icon">📚</span> Eğitim Ayarları</a></li>
+                    <li id="sidebarUsersSettings" style="display: none;"><a href="#" id="navSettingsUsers" class="nav-link" onclick="showSettingsSection(event, 'users')"><span class="icon">👥</span> Sistem Kullanıcıları</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Top Navbar -->
+        <nav class="navbar">
+            <div class="navbar-left">
+                <h1 class="page-title">🏠 Ana Sayfa</h1>
+            </div>
+            <div class="navbar-right">
+                <div class="user-profile-nav">
+                    <img id="userPhotoNav" src="" alt="Profile" class="user-photo-nav" onclick="showProfileSettings(event)">
+                    <div class="user-info-nav">
+                        <span id="userNameNav" class="user-name-nav"></span>
+                        <button class="logout-btn-nav" onclick="logout()">Çıkış</button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Ana Sayfa View -->
+            <div id="dashboardView" class="content-view active">
+                <!-- Stats Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon egitim">📚</div>
+                        <div class="stat-content">
+                            <h3>Toplam Eğitim</h3>
+                            <p id="totalEgitimCount" class="stat-number">0</p>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon photo">📷</div>
+                        <div class="stat-content">
+                            <h3>Toplam Fotoğraf</h3>
+                            <p id="totalPhotoCount" class="stat-number">0</p>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon storage">💾</div>
+                        <div class="stat-content">
+                            <h3>Toplam Boyut</h3>
+                            <p id="totalStorageSize" class="stat-number">0 MB</p>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon user">👤</div>
+                        <div class="stat-content">
+                            <h3>Sizin Fotoğraflarınız</h3>
+                            <p id="userPhotoCount" class="stat-number">0</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Yükleme Bölümü -->
+                <div class="card upload-card">
+                    <div class="card-header">
+                        <h2>📤 Fotoğraf Yükle</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="upload-form">
+                            <div class="form-group">
+                                <label for="egitimAdiSelect">Eğitim Adı *</label>
+                                <select id="egitimAdiSelect" required>
+                                    <option value="">Eğitim seçin</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="fileInput">Fotoğraf Seçin *</label>
+                                <div class="upload-actions">
+                                    <input type="file" id="fileInput" accept=".jpg,.jpeg,.png,.gif,.webp,image/jpeg,image/jpg,image/png,image/gif,image/webp" multiple style="display: none;">
+                                    <button class="upload-btn-primary" onclick="document.getElementById('fileInput').click()">
+                                        📁 Fotoğraf Seç
+                                    </button>
+                                    <span id="fileCount" class="file-count"></span>
+                                    <button class="upload-btn-submit" onclick="submitUpload()">➕ Yükle</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="uploadStatus" class="status-message" style="display: none;"></div>
+                    </div>
+                </div>
+
+                <!-- Eğitimler Tablosu -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2>📚 Eğitimler ve Fotoğraflar</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Eğitim Adı</th>
+                                        <th>Fotoğraf Sayısı</th>
+                                        <th>İşlemler</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="egitimTableBody">
+                                    <tr>
+                                        <td colspan="3" class="text-center">Eğitimler yükleniyor...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Toast Container -->
+            <div id="toastContainer" class="toast-container"></div>
+
+            <!-- Galeri View -->
+            <div id="galleryView" class="content-view">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>🖼️ Fotoğraf Galerisi</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="egitim-section">
+                            <div class="egitim-selector">
+                                <label for="egitimFilter">📚 Eğitim Seçin:</label>
+                                <select id="egitimFilter" onchange="changeEgitim()">
+                                    <option value="">Tüm Eğitimler</option>
+                                </select>
+                                <span id="photoCount" class="photo-count"></span>
+                            </div>
+                        </div>
+
+                        <div class="gallery" id="gallery">
+                            <div class="loading">Fotoğraflar yükleniyor...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ayarlar View -->
+            <div id="settingsView" class="content-view">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>⚙️ Ayarlar</h2>
+                    </div>
+                    <div class="card-body settings-content">
+                        <div class="settings-group">
+                            <h3>Hesap Bilgileri</h3>
+                            <div class="settings-item">
+                                <label>Ad Soyad:</label>
+                                <p id="settingsName"></p>
+                            </div>
+                            <div class="settings-item">
+                                <label>Email:</label>
+                                <p id="settingsEmail"></p>
+                            </div>
+                        </div>
+
+                        <div class="settings-group danger">
+                            <h3>Güvenlik</h3>
+                            <button class="btn btn-danger" onclick="confirmLogout()">Çıkış Yap</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
