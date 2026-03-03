@@ -36,6 +36,9 @@
 
     <!-- Ana Sayfa -->
     <div id="mainApp" class="dashboard-container" style="display: none;">
+        <!-- Sidebar Overlay -->
+        <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+        
         <!-- Sidebar -->
         <aside class="sidebar">
             <div class="sidebar-logo">
@@ -54,6 +57,11 @@
         <!-- Top Navbar -->
         <nav class="navbar">
             <div class="navbar-left">
+                <button class="hamburger-btn" onclick="toggleSidebar()" aria-label="Menü">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
                 <h1 class="page-title">🏠 Ana Sayfa</h1>
             </div>
             <div class="navbar-right">

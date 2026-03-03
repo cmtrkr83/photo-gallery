@@ -295,7 +295,7 @@ app.use(passport.session());
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: process.env.GOOGLE_CALLBACK_URL || "http://localhost:7000/auth/google/callback"
+    callbackURL: process.env.GOOGLE_CALLBACK_URL
 },
 function(accessToken, refreshToken, profile, cb) {
     const email = profile.emails[0].value;
@@ -330,9 +330,9 @@ passport.deserializeUser((user, done) => {
 
 // Middleware
 app.use(cors({
-    origin: process.env.CLIENT_URL || 'http://localhost:7000',
+    origin: process.env.CLIENT_URL,
     credentials: true
-}));
+})); 
 
 app.use(express.json());
 app.use(express.static('public'));
@@ -373,7 +373,7 @@ const storage = multer.diskStorage({
 
 const fileFilter = (req, file, cb) => {
     // Sadece resim dosyalarına izin ver
-    const allowedTypes = /jpeg|jpg|png|gif|webp/;
+    const allowedTypes = /jpeg|jpg|png|gif|heic|webp/;
     const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
     const mimetype = allowedTypes.test(file.mimetype);
     

@@ -141,6 +141,7 @@ function setActiveSidebarLink(linkId) {
 // Dashboard görünüme geç
 function showDashboard(event) {
     if (event) event.preventDefault();
+    closeSidebarOnMobile();
 
     setActiveSidebarLink('navDashboard');
     
@@ -163,6 +164,7 @@ function showDashboard(event) {
 // Galeri görünüme geç
 function showGallery(event) {
     if (event) event.preventDefault();
+    closeSidebarOnMobile();
 
     setActiveSidebarLink('navGallery');
     
@@ -193,6 +195,7 @@ function showProfileSettings(event) {
 
 function showSettingsSection(event, sectionName) {
     if (event) event.preventDefault();
+    closeSidebarOnMobile();
 
     const navMap = {
         account: null,
@@ -441,6 +444,34 @@ async function logout() {
     } catch (error) {
         console.error('Logout hatası:', error);
         showError('Çıkış yaparken bir hata oluştu');
+    }
+}
+
+// Hamburger menü toggle
+function toggleSidebar() {
+    const sidebar = document.querySelector('.sidebar');
+    const hamburger = document.querySelector('.hamburger-btn');
+    const overlay = document.querySelector('.sidebar-overlay');
+    
+    if (sidebar && hamburger && overlay) {
+        sidebar.classList.toggle('active');
+        hamburger.classList.toggle('active');
+        overlay.classList.toggle('active');
+    }
+}
+
+// Mobilde sidebar'i kapat (menü linki tıklandığında)
+function closeSidebarOnMobile() {
+    if (window.innerWidth <= 768) {
+        const sidebar = document.querySelector('.sidebar');
+        const hamburger = document.querySelector('.hamburger-btn');
+        const overlay = document.querySelector('.sidebar-overlay');
+        
+        if (sidebar && hamburger && overlay) {
+            sidebar.classList.remove('active');
+            hamburger.classList.remove('active');
+            overlay.classList.remove('active');
+        }
     }
 }
 
