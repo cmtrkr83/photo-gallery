@@ -838,6 +838,24 @@ body {
     grid-column: 1 / -1;
 }
 
+.account-password-form {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.account-password-form input {
+    padding: 10px 12px;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 0.95rem;
+}
+
+.account-password-form button {
+    justify-self: start;
+}
+
 .admin-user-list {
     display: flex;
     flex-direction: column;

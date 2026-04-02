@@ -229,6 +229,7 @@ function populateSettings() {
     const roleBadgeColor = currentUser.role === 'admin' ? '#667eea' : '#48bb78';
     
     const isAdmin = currentUser.role === 'admin';
+    const isLocalAccount = currentUser.authProvider === 'local';
 
     const settingsHTML = `
             <div class="settings-pages">
@@ -255,7 +256,18 @@ function populateSettings() {
 
                     <div class="settings-group danger">
                         <h3>🚪 Güvenlik</h3>
-                        <p style="margin-bottom: 15px; color: #718096;">Sistemden çıkış yapmak için aşağıdaki butona tıklayın</p>
+                        ${isLocalAccount ? `
+                        <p style="margin-bottom: 10px; color: #718096;">Hesabınızın şifresini aşağıdan güncelleyebilirsiniz</p>
+                        <form id="changePasswordForm" class="account-password-form">
+                            <input type="password" id="currentPasswordInput" placeholder="Mevcut şifre" required>
+                            <input type="password" id="newPasswordInput" placeholder="Yeni şifre (min 6 karakter)" required>
+                            <input type="password" id="confirmNewPasswordInput" placeholder="Yeni şifre tekrar" required>
+                            <button type="submit" class="btn btn-view">Şifreyi Güncelle</button>
+                        </form>
+                        ` : `
+                        <p style="margin-bottom: 15px; color: #718096;">Bu hesap Google ile giriş yaptığı için şifre değişikliği Google hesabından yönetilir.</p>
+                        `}
+                        <p style="margin-bottom: 15px; margin-top: 15px; color: #718096;">Sistemden çıkış yapmak için aşağıdaki butona tıklayın</p>
                         <button class="btn-danger" onclick="confirmLogout()">Çıkış Yap</button>
                     </div>
                 </section>
@@ -314,11 +326,65 @@ function populateSettings() {
     
     document.querySelector('.settings-content').innerHTML = settingsHTML;
 
+    const changePasswordForm = document.getElementById('changePasswordForm');
+    if (changePasswordForm) {
+        changePasswordForm.addEventListener('submit', handleChangePasswordSubmit);
+    }
+
     if (!isAdmin && activeSettingsSection !== 'account') {
         activeSettingsSection = 'account';
     }
 
     openSettingsSection(null, activeSettingsSection);
+}
+
+async function handleChangePasswordSubmit(event) {
+    event.preventDefault();
+
+    const currentPasswordInput = document.getElementById('currentPasswordInput');
+    const newPasswordInput = document.getElementById('newPasswordInput');
+    const confirmNewPasswordInput = document.getElementById('confirmNewPasswordInput');
+
+    const currentPassword = currentPasswordInput ? currentPasswordInput.value : '';
+    const newPassword = newPasswordInput ? newPasswordInput.value : '';
+    const confirmNewPassword = confirmNewPasswordInput ? confirmNewPasswordInput.value : '';
+
+    if (!currentPassword || !newPassword || !confirmNewPassword) {
+        showError('Tüm şifre alanlarını doldurun');
+        return;
+    }
+
+    if (newPassword !== confirmNewPassword) {
+        showError('Yeni şifreler birbiriyle eşleşmiyor');
+        return;
+    }
+
+    try {
+        const response = await fetch(`${API_URL}/api/account/change-password`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({
+                currentPassword,
+                newPassword,
+                confirmNewPassword
+            })
+        });
+
+        const result = await readJsonResponse(response);
+        if (!response.ok) {
+            throw new Error(result.error || 'Şifre değiştirilemedi');
+        }
+
+        if (currentPasswordInput) currentPasswordInput.value = '';
+        if (newPasswordInput) newPasswordInput.value = '';
+        if (confirmNewPasswordInput) confirmNewPasswordInput.value = '';
+
+        showSuccess(result.message || 'Şifreniz başarıyla güncellendi');
+    } catch (error) {
+        console.error('Şifre değiştirme hatası:', error);
+        showError(error.message || 'Şifre güncellenemedi');
+    }
 }
 
 function openSettingsSection(event, sectionName) {

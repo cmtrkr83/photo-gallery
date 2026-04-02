@@ -3,3 +3,6 @@ uploads/
 *.log
 .DS_Store
 .env
+local-users.json
+allowed-users.json
+education-names.json

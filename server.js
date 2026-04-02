@@ -463,6 +463,49 @@ app.post('/api/auth/local-login', async (req, res) => {
     }
 });
 
+app.post('/api/account/change-password', isAuthenticated, async (req, res) => {
+    try {
+        const currentPassword = String(req.body.currentPassword || '');
+        const newPassword = String(req.body.newPassword || '');
+        const confirmNewPassword = String(req.body.confirmNewPassword || '');
+
+        if (!currentPassword || !newPassword || !confirmNewPassword) {
+            return res.status(400).json({ error: 'Tüm şifre alanları zorunludur' });
+        }
+
+        if (newPassword !== confirmNewPassword) {
+            return res.status(400).json({ error: 'Yeni şifreler birbiriyle eşleşmiyor' });
+        }
+
+        if (newPassword.length < 6) {
+            return res.status(400).json({ error: 'Yeni şifre en az 6 karakter olmalıdır' });
+        }
+
+        if (req.user.authProvider && req.user.authProvider !== 'local') {
+            return res.status(400).json({ error: 'Bu hesap için şifre değişikliği desteklenmiyor' });
+        }
+
+        const localUser = getLocalUserByEmail(req.user.email);
+        if (!localUser || !localUser.passwordHash) {
+            return res.status(404).json({ error: 'Kullanıcı hesabı bulunamadı' });
+        }
+
+        const isValidCurrentPassword = await bcrypt.compare(currentPassword, localUser.passwordHash);
+        if (!isValidCurrentPassword) {
+            return res.status(401).json({ error: 'Mevcut şifre hatalı' });
+        }
+
+        localUser.passwordHash = await bcrypt.hash(newPassword, 10);
+        localUser.updatedAt = new Date().toISOString();
+        saveLocalUsers();
+
+        res.json({ message: 'Şifreniz başarıyla güncellendi' });
+    } catch (error) {
+        console.error('Şifre değiştirme hatası:', error);
+        res.status(500).json({ error: 'Şifre değiştirilirken hata oluştu' });
+    }
+});
+
 // Kullanıcı bilgilerini getir
 app.get('/api/user', (req, res) => {
     if (req.isAuthenticated()) {
