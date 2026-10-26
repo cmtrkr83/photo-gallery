@@ -1,241 +1,132 @@
-# 📸 Fotoğraf Galerisi Projesi
+# 📸 Photo Gallery
 
-Docker tabanlı, modern web fotoğraf galerisi uygulaması.
+> A self-hosted photo gallery in Docker: Google or email login, education-based albums, drag-free uploads, lightbox viewing and persistent storage.
 
-## 🎯 Özellikler
+[![Docker](https://img.shields.io/badge/Docker-ready-2496ED?style=flat-square&logo=docker&logoColor=white)](https://www.docker.com/)
+[![Node.js](https://img.shields.io/badge/Node.js-Express-339933?style=flat-square&logo=node.js&logoColor=white)](https://expressjs.com/)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue?style=flat-square)](LICENSE)
 
-- ✅ Çoklu fotoğraf yükleme
-- ✅ Fotoğraf görüntüleme (lightbox)
-- ✅ Fotoğraf silme
-- ✅ Responsive tasarım
-- ✅ Docker ile kolay kurulum
-- ✅ Kalıcı veri saklama (volume)
+<p align="center">
+  <a href="https://www.buymeacoffee.com/cmtrkr"><img src="https://img.shields.io/badge/Buy%20Me%20a%20Coffee-FFDD00?style=for-the-badge&logo=buymeacoffee&logoColor=black" alt="Buy Me a Coffee"></a>
+</p>
 
-## 🛠️ Teknolojiler
+Photo Gallery is a compact Express application for hosting school or team photo albums on your own server. Users sign in with Google OAuth or a local email/password account, upload photos into named albums ("eğitimler"), browse them in a responsive grid with a lightbox, and delete their own uploads. Everything runs in one container and survives restarts through a Docker volume.
 
-- **Backend:** Node.js + Express
-- **Frontend:** Vanilla JavaScript, HTML5, CSS3
-- **Dosya Yükleme:** Multer
-- **Container:** Docker & Docker Compose
+## 📸 Screenshot
 
-## 📋 Gereksinimler
+<p align="center">
+  <img src="docs/screenshots/login.png" width="760" alt="Photo Gallery login screen">
+  <br>
+  <sub>The real login screen: local email/password or Google sign-in.</sub>
+</p>
 
-Ubuntu Server sanal makinenizde şunların kurulu olması gerekir:
+## ✨ Features
 
-- Docker (20.10+)
-- Docker Compose (1.29+)
+- 🔐 **Two login paths** — Google OAuth 2.0 and local email/password accounts.
+- 🗂️ **Albums per education** — photos are grouped into education/album names.
+- ⬆️ **Multi-file upload** — 5 MB per-file limit, type and size validation.
+- 🖼️ **Lightbox viewer** — keyboard-friendly full-size previews.
+- 🗑️ **Photo deletion** — authenticated users can remove photos they are allowed to manage.
+- 👥 **User and access management** — admin screens for allowed users, roles and system accounts.
+- 🐳 **Docker-first** — `Dockerfile` + `docker-compose.yml`, named volume for uploads.
+- ♻️ **Persistent data** — container rebuilds do not lose photos.
 
-### Docker Kurulumu (Ubuntu Server)
+## 🚀 Quick start
 
-```bash
-# Docker kurulumu
-curl -fsSL https://get.docker.com -o get-docker.sh
-sudo sh get-docker.sh
-
-# Docker Compose kurulumu
-sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-sudo chmod +x /usr/local/bin/docker-compose
-
-# Kullanıcıyı docker grubuna ekle
-sudo usermod -aG docker $USER
-```
-
-## 🚀 Kurulum ve Çalıştırma
-
-### 1. Projeyi Ubuntu Server'a Aktarın
-
-Windows Server'dan Ubuntu Server'a dosyaları aktarmak için SCP kullanabilirsiniz:
+### Docker (recommended)
 
 ```bash
-# Windows PowerShell'den
-scp -r C:\Users\Cem\Desktop\photo-gallery username@ubuntu-server-ip:/home/username/
+git clone https://github.com/cmtrkr83/photo-gallery.git
+cd photo-gallery
+
+# Create your environment file
+cp .env.example .env   # if present; otherwise create .env as shown below
+docker compose up -d --build
 ```
 
-Alternatif olarak:
-- Shared folder kullanarak
-- Git repository üzerinden
-- USB/Network drive ile
+Open `http://<server-ip>:3000`.
 
-### 2. Ubuntu Server'da Çalıştırma
+Example `.env`:
+
+```dotenv
+PORT=3000
+SESSION_SECRET=replace-with-a-long-random-string
+GOOGLE_CLIENT_ID=your-google-client-id
+GOOGLE_CLIENT_SECRET=your-google-client-secret
+GOOGLE_CALLBACK_URL=http://localhost:3000/auth/google/callback
+```
+
+Google OAuth is optional. For a purely local setup, create users through the admin/local-user flow.
+
+### Local development
 
 ```bash
-# Proje klasörüne gidin
-cd /home/username/photo-gallery
-
-# Docker container'ı başlatın
-docker-compose up -d
-
-# Logları görüntüleyin
-docker-compose logs -f
-```
-
-### 3. Uygulamaya Erişim
-
-Tarayıcınızdan şu adrese gidin:
-```
-http://ubuntu-server-ip:3000
-```
-
-## 📁 Proje Yapısı
-
-```
-photo-gallery/
-├── server.js              # Backend sunucu
-├── package.json           # Node.js bağımlılıkları
-├── Dockerfile            # Docker imaj tanımı
-├── docker-compose.yml    # Docker Compose yapılandırması
-├── .dockerignore         # Docker ignore dosyası
-├── .gitignore           # Git ignore dosyası
-├── public/              # Frontend dosyaları
-│   ├── index.html       # Ana sayfa
-│   ├── styles.css       # Stil dosyası
-│   └── app.js          # JavaScript mantığı
-└── uploads/            # Yüklenen fotoğraflar (otomatik oluşur)
-```
-
-## 🔧 Yapılandırma
-
-### Port Değiştirme
-
-`docker-compose.yml` dosyasında portu değiştirebilirsiniz:
-
-```yaml
-ports:
-  - "8080:3000"  # Sol taraf: dış port, sağ taraf: iç port
-```
-
-### Upload Limiti Değiştirme
-
-`server.js` dosyasında upload limitini ayarlayabilirsiniz (varsayılan: 5MB):
-
-```javascript
-limits: { fileSize: 5 * 1024 * 1024 }, // 5MB (güvenlik için sınırlandırılmıştır)
-```
-
-## 📝 API Endpoints
-
-| Method | Endpoint | Açıklama |
-|--------|----------|----------|
-| GET | `/api/photos` | Tüm fotoğrafları listele |
-| POST | `/api/upload` | Yeni fotoğraf yükle |
-| DELETE | `/api/photos/:filename` | Fotoğraf sil |
-
-## 🐳 Docker Komutları
-
-```bash
-# Container'ı başlat
-docker-compose up -d
-
-# Container'ı durdur
-docker-compose down
-
-# Logları görüntüle
-docker-compose logs -f
-
-# Container'ı yeniden başlat
-docker-compose restart
-
-# Container durumunu kontrol et
-docker-compose ps
-
-# İmajı yeniden oluştur
-docker-compose build --no-cache
-```
-
-## � Veri Kalıcılığı (Docker Volume)
-
-Resimleri içeren `uploads` klasörü **Named Volume** ile Docker sisteminde saklanır:
-
-```bash
-# Volume listesini görüntüle
-docker volume ls
-
-# Spesifik volume bilgileri
-docker volume inspect photo-gallery-uploads
-
-# Volume yedekle
-docker run --rm -v photo-gallery-uploads:/data -v $(pwd):/backup alpine tar czf /backup/photo-gallery-backup.tar.gz -C /data .
-
-# Volume'dan yedek geri yükle
-docker run --rm -v photo-gallery-uploads:/data -v $(pwd):/backup alpine tar xzf /backup/photo-gallery-backup.tar.gz -C /data
-
-# Volume silme (dikkat: veriler kalıcı olarak silinir)
-docker volume rm photo-gallery-uploads
-```
-
-**Avantajları:**
-- ✅ Container silinse/yeniden oluşturulsa bile veriler kalır
-- ✅ Host makinesi formatlanırsa da Docker volumeleri korunur
-- ✅ Docker tarafından otomatik yönetilir
-- ✅ Kolay yedekleme ve taşıma
-- ✅ Üretim ortamı için güvenli
-
-## 🔒 Güvenlik Notları
-
-**Üretim ortamı için öneriler:**
-
-1. **Google OAuth** yapılandırması kontrol edin (`.env` dosyasında)
-2. **Session Secret** güçlü olduğundan emin olun
-3. **Nginx Reverse Proxy** kullanın
-4. **SSL/TLS** sertifikası ekleyin (Let's Encrypt)
-5. **Kimlik doğrulama** sistemi (mevcut)
-6. **Rate limiting** uygulayın
-7. **Dosya boyutu** (5MB) ve **format kontrolü** yapın (mevcut)
-8. `.env` dosyası ile hassas bilgileri saklayın
-9. **Regular backups** alın
-
-## 🌐 Yerel Geliştirme (İsteğe Bağlı)
-
-Docker olmadan geliştirme yapmak için:
-
-```bash
-# Bağımlılıkları yükle
 npm install
-
-# Geliştirme modunda çalıştır (nodemon ile)
-npm run dev
-
-# Normal çalıştırma
-npm start
+npm run dev    # nodemon
+npm start      # node server.js
 ```
 
-## 📊 Veri Yedekleme
+## 📁 Project structure
 
-Fotoğraflar `./uploads` klasöründe saklanır. Yedekleme için:
+```text
+photo-gallery/
+├── server.js              # Express app, auth, upload and gallery API
+├── Dockerfile
+├── docker-compose.yml
+├── public/
+│   ├── index.html         # Gallery UI
+│   ├── styles.css
+│   └── app.js
+└── uploads/               # Uploaded photos (Docker volume in production)
+```
+
+## 🔌 API
+
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| `GET` | `/api/egitimler` | List albums (authenticated) |
+| `GET` | `/api/photos/:egitimAdi` | List photos in an album |
+| `GET` | `/api/photos` | List all photos |
+| `POST` | `/api/upload` | Upload one or more photos |
+| `DELETE` | `/api/photos/:egitimAdi/:filename` | Delete a photo |
+| `GET` | `/api/user` | Current user |
+| `POST` | `/api/auth/local-login` | Email/password login |
+| `POST` | `/api/logout` | End the session |
+
+## 🐳 Docker operations
 
 ```bash
-# Yedek al
-tar -czf photo-backup-$(date +%Y%m%d).tar.gz uploads/
-
-# Yedekten geri yükle
-tar -xzf photo-backup-20260227.tar.gz
+docker compose up -d          # start
+docker compose logs -f        # logs
+docker compose down           # stop
+docker compose build --no-cache
+docker volume ls              # inspect volumes
 ```
 
-## 🐛 Sorun Giderme
+Back up the upload volume:
 
-### Container başlamıyor
 ```bash
-docker-compose logs
+docker run --rm -v photo-gallery-uploads:/data -v "$PWD":/backup alpine \
+  tar czf /backup/photo-gallery-backup.tar.gz -C /data .
 ```
 
-### Port zaten kullanımda
-```bash
-# Port değiştirin veya çakışan servisi durdurun
-sudo lsof -i :3000
-```
+## 🔐 Security notes
 
-### Fotoğraflar kayboldu
-- Volume bağlantısını kontrol edin
-- `./uploads` klasör izinlerini kontrol edin
+- Set a strong `SESSION_SECRET`; never commit `.env`.
+- Use HTTPS behind a reverse proxy (Caddy, Nginx, Cloudflare Tunnel).
+- Restrict Google OAuth to your domain where possible.
+- Keep the 5 MB upload limit and validate file types.
+- Take regular backups of the uploads volume.
+- The default session secret and admin token in the code are development fallbacks — change them in production.
 
-## 📄 Lisans
+## ❤️ Support
 
-MIT License
+If Photo Gallery is useful to you, you can buy me a coffee:
 
-## 👤 İletişim
+<p align="center">
+  <a href="https://www.buymeacoffee.com/cmtrkr"><img src="https://img.shields.io/badge/Buy%20Me%20a%20Coffee-FFDD00?style=for-the-badge&logo=buymeacoffee&logoColor=black" alt="Buy Me a Coffee"></a>
+</p>
 
-Sorularınız için issue açabilirsiniz.
+## 📄 License
 
----
-
-**Not:** Bu proje Windows Server 2016 üzerinde çalışan Ubuntu Server sanal makinesinde Docker ile çalıştırılmak üzere tasarlanmıştır.
+[MIT](LICENSE) © 2026 Cem Türker.
